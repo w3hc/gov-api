@@ -8,7 +8,7 @@ async function bootstrap() {
 
   const config = new DocumentBuilder()
     .setTitle('Gov API')
-    .setDescription('Government API documentation')
+    .setDescription('Gov API docs')
     .setVersion('1.0')
     .build();
 
@@ -20,7 +20,7 @@ async function bootstrap() {
 
   Logger.log(`Application is running on port ${port}`);
   Logger.log(
-    `Swagger documentation available at: http://localhost:${port}/api`,
+    `Swagger documentation available at: http://localhost:${port}/api and https://gov-api.w3hc.org/api when in prod`,
   );
 }
 bootstrap();
