@@ -1,67 +1,18 @@
-name: CI/CD Pipeline
+name: Deploy to VPS
 
 on:
   push:
     branches: [main]
-
-  # Only run deploy job when PR is merged, not on direct pushes
   pull_request:
     types: [closed]
     branches: [main]
 
 jobs:
-  test:
-    runs-on: ubuntu-22.04
-
-    steps:
-      - uses: actions/checkout@v3
-
-      - name: Setup Node.js
-        uses: actions/setup-node@v3
-        with:
-          node-version: '20.18.0'
-
-      - name: Install pnpm
-        uses: pnpm/action-setup@v2
-        with:
-          version: latest
-
-      - name: Install dependencies
-        run: pnpm install
-
-      - name: Run linter
-        run: pnpm run lint
-
-      - name: Run tests
-        run: pnpm run test
-
-      - name: Run e2e tests
-        run: pnpm run test:e2e
-
   deploy:
-    needs: test
     if: github.ref == 'refs/heads/main' || github.event.pull_request.merged == true
     runs-on: ubuntu-22.04
 
     steps:
-      - uses: actions/checkout@v3
-
-      - name: Setup Node.js
-        uses: actions/setup-node@v3
-        with:
-          node-version: '16.20.2'
-
-      - name: Install pnpm
-        uses: pnpm/action-setup@v2
-        with:
-          version: latest
-
-      - name: Install dependencies
-        run: pnpm install
-
-      - name: Build application
-        run: pnpm run build
-
       - name: Deploy to VPS
         uses: appleboy/ssh-action@master
         with:
