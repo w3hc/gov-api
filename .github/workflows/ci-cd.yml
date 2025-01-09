@@ -17,8 +17,6 @@ jobs:
 
       - name: Setup Node.js
         uses: actions/setup-node@v3
-        with:
-          node-version: '16.20.2'
 
       - name: Install pnpm
         uses: pnpm/action-setup@v2
@@ -47,8 +45,6 @@ jobs:
 
       - name: Setup Node.js
         uses: actions/setup-node@v3
-        with:
-          node-version: '16.20.2'
 
       - name: Install pnpm
         uses: pnpm/action-setup@v2
@@ -72,4 +68,4 @@ jobs:
             git pull origin main
             pnpm install
             pnpm run build
-            pm2 reload gov-api || pm2 start dist/main.js --name gov-api
+            pm2 reload gov-api
