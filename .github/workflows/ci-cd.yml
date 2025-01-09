@@ -4,13 +4,14 @@ on:
   push:
     branches: [main]
 
+  # Only run deploy job when PR is merged, not on direct pushes
   pull_request:
     types: [closed]
     branches: [main]
 
 jobs:
   test:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
 
     steps:
       - uses: actions/checkout@v3
@@ -40,7 +41,7 @@ jobs:
   deploy:
     needs: test
     if: github.event.pull_request.merged == true
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
 
     steps:
       - uses: actions/checkout@v3
@@ -72,4 +73,4 @@ jobs:
             git pull origin main
             pnpm install
             pnpm run build
-            pm2 reload gov-api
+            pm2 reload gov-api || pm2 start dist/main.js --name gov-api --time
