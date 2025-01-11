@@ -16,7 +16,7 @@ jobs:
           username: ${{ secrets.VPS_USERNAME }}
           key: ${{ secrets.VPS_SSH_KEY }}
           script: |
-            source ~/.bashrc
+            npm install -g pnpm pm2
             cd ~/gov-api
             git pull origin main
             pnpm install
