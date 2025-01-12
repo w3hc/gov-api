@@ -16,9 +16,26 @@ jobs:
           username: ${{ secrets.VPS_USERNAME }}
           key: ${{ secrets.VPS_SSH_KEY }}
           script: |
-            npm install -g pnpm pm2
+            # Install Node.js if not present
+            if ! command -v node &> /dev/null; then
+              curl -fsSL https://deb.nodesource.com/setup_18.x | sudo -E bash -
+              sudo apt-get install -y nodejs
+            fi
+
+            # Reset any local changes in the repository
             cd ~/gov-api
+            git reset --hard
+            git clean -fd
+
+            # Update the code
             git pull origin main
+
+            # Install global tools
+            sudo npm install -g pnpm pm2
+
+            # Install dependencies and build
             pnpm install
             pnpm run build
+
+            # Start/reload the application
             pm2 reload gov-api || pm2 start dist/main.js --name gov-api --time
