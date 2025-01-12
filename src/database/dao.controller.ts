@@ -56,4 +56,34 @@ export class DaoController {
     }
     return dao;
   }
+
+  @Post(':address/execute')
+  @ApiOperation({
+    summary: 'Execute a succeeded proposal for the specified DAO',
+  })
+  @ApiResponse({
+    status: 200,
+    description: 'Proposal executed successfully',
+    schema: {
+      type: 'object',
+      properties: {
+        success: { type: 'boolean' },
+        proposalId: { type: 'string' },
+        transactionHash: { type: 'string' },
+      },
+    },
+  })
+  @ApiResponse({
+    status: 400,
+    description:
+      'Bad request - Invalid address, no executable proposals, or execution failed',
+  })
+  async executeProposal(@Param('address') address: string) {
+    try {
+      const result = await this.daoService.executeProposal(address);
+      return result;
+    } catch (error) {
+      throw new BadRequestException(error.message);
+    }
+  }
 }
