@@ -120,50 +120,37 @@ export class DaoService implements OnModuleInit {
         const log = event as ethers.EventLog;
         if (!log.args) continue;
 
-        // Access args by index since they match the event signature order:
-        // ProposalCreated(uint256 proposalId, address proposer, address[] targets, uint256[] values, string[] signatures, bytes[] calldatas, uint256 startBlock, uint256 endBlock, string description)
-        const proposalId = log.args[0]; // uint256 proposalId
-        const targets = log.args[2]; // address[] targets
-        const values = log.args[3]; // uint256[] values
-        const calldatas = log.args[5]; // bytes[] calldatas
-        const description = log.args[8]; // string description
+        const proposalId = log.args[0];
+        const targets = Array.from(log.args[2]);
+        const values = Array.from(log.args[3]);
+        const calldatas = Array.from(log.args[5]);
+        const description = log.args[8];
+
+        console.log('proposalId', proposalId);
 
         console.log('targets', targets);
         console.log('values', values);
         console.log('calldatas', calldatas);
         console.log('description', description);
 
-        console.log('proposalId', proposalId);
         // Check proposal state (4 is Succeeded)
         const state = await gov.state(proposalId);
         console.log('state', state);
-        // if (state !== 4) continue;
+        if (state !== 4) continue;
 
         // // Check if already executed
         // const executedFilter = gov.filters.ProposalExecuted(proposalId);
         // const executedEvents = await gov.queryFilter(executedFilter);
         // if (executedEvents.length > 0) continue;
 
-        // Hash the description
         const descriptionHash = ethers.id(description);
-
         console.log('descriptionHash:', descriptionHash);
 
         // Execute the proposal
-        // const executeCall = await gov.execute(
-        //   targets,
-        //   values,
-        //   calldatas,
-        //   descriptionHash,
-        //   // {
-        //   //   gasLimit: 500000, // Adjust as needed
-        //   // },
-        // );
-
         const executeCall = await gov.execute(
-          Array.from(targets), // Convert to regular array
-          Array.from(values), // Convert to regular array
-          Array.from(calldatas), // Convert to regular array
+          targets,
+          values,
+          calldatas,
           descriptionHash,
         );
 
