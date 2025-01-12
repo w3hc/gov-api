@@ -136,12 +136,7 @@ export class DaoService implements OnModuleInit {
         // Check proposal state (4 is Succeeded)
         const state = await gov.state(proposalId);
         console.log('state', state);
-        if (state !== 4) continue;
-
-        // // Check if already executed
-        // const executedFilter = gov.filters.ProposalExecuted(proposalId);
-        // const executedEvents = await gov.queryFilter(executedFilter);
-        // if (executedEvents.length > 0) continue;
+        // if (state !== 4) return;
 
         const descriptionHash = ethers.id(description);
         console.log('descriptionHash:', descriptionHash);
